@@ -1,11 +1,10 @@
 import { useMemo, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { Form, InputLabel, InputField, AddButton } from './ContactForm.styled';
-import {
-  useAddContactMutation,
-  useGetContactsQuery,
-} from 'redux/contactsSlice';
 import { toast } from 'react-toastify';
+import { addContact } from 'redux/operations';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectContacts, selectIsLoading } from 'redux/selectors';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
@@ -14,16 +13,9 @@ const ContactForm = () => {
   const nameInputId = useMemo(() => nanoid(4), []);
   const numberInputId = useMemo(() => nanoid(4), []);
 
-  const { data: contacts } = useGetContactsQuery();
-  const [addContact, { isLoading }] = useAddContactMutation();
-
-  const handleAddContact = async ({ name, number }) => {
-    try {
-      await addContact({ name, number });
-    } catch (error) {
-      console.log('error:', error);
-    }
-  };
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectIsLoading);
+  const contacts = useSelector(selectContacts);
 
   const resetForm = () => {
     setName('');
@@ -61,7 +53,7 @@ const ContactForm = () => {
       return;
     }
 
-    handleAddContact({ name, number });
+    dispatch(addContact({ name, number }));
 
     resetForm();
   };

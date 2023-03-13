@@ -6,8 +6,17 @@ import Section from './Section';
 import Filter from './Filter';
 import Layout from './Layout';
 import { List } from './ContactList/ContactList.styled';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchContacts } from 'redux/operations';
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
+
   return (
     <Layout>
       <Section title="Phonebook">
